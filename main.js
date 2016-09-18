@@ -15,6 +15,8 @@ const App = React.createClass({
       items: [...items, newItem]
     })
 
+    this.sumBalance();
+
   },
 
   removeItem(id) {
@@ -32,51 +34,53 @@ const App = React.createClass({
     this.setState({
       items: newState
     })
+    this.sumBalance();
+
     console.log('state after edit:', this.state.items);
   },
 
-  // while editing
-  // onChange(value, index) {
-  //   const { items } = this.state;
-  //   let newItems = items;
-  //
-  //   //newItems[index][value] =
-  //   // console.log('newItems[index][value]', newItems[index][value]);
-  //   // console.log('this.refs.value.value', this.refs.value.value)
-  //
-  //
-  //   this.setState({
-  //     items: newItems
-  //   })
-  //   // console.log('onChange value, index:', value, index);
-  //   console.log('this.state', this.state);
-  // },
+  sumBalance() {
+    const { items } = this.state;
+    let totalDebits = 0;
+    let totalCredits = 0;
+    let debits = [];
+    let credits = [];
+    let item;
 
-  editState(e) {
-    console.log('editState value, id', value, id);
+    for (let i=0; i<items.length; i++) {
+      item = items[i];
+      if(item.type === "debit") {
+        totalDebits += parseFloat(item.amount);
+      } else {
+        totalCredits += parseFloat(item.amount);
+      }
+    }
+    let totalBalance = totalCredits - totalDebits;
+    this.setState({
+      totalCredits: totalCredits,
+      totalDebits: totalDebits,
+      balance: totalBalance
+    })
+
+    console.log('totalDebits', totalDebits);
+    console.log('totalCredits', totalCredits);
   },
 
-  // editItem(item) {
-  //   //const { items } = this.state;
-  //   console.log("edit button clicked");
-  //
-  //   console.log('item:', item.amount);
-  //
-  //   // document.getElementById(amount).value = "XX";
-  //   //console.log("amount", this.refs.amount);
-  //   //console.log('amount', document.getElementById(amount));
-  //   // this.refs.amount.value = "XX";
-  // },
-
   render() {
-    const { items } = this.state;
+
+    const { items, balance, totalCredits, totalDebits } = this.state;
     return (
       <div className="container">
       <h1>Banking App</h1>
-      <NewItemForm addNewItem={this.addNewItem}/>
-      <ItemList items={items} removeItem={this.removeItem} editItem={this.editItem} editState={this.editState} edit={this.edit}/>
+      <NewItemForm addNewItem={this.addNewItem} sumBalance={this.sumBalance}/>
+      <ItemList items={items} balance={balance} totalCredits={totalCredits} totalDebits={totalDebits} removeItem={this.removeItem} editItem={this.editItem} editState={this.editState} edit={this.edit}/>
       </div>
     )
+  },
+
+  componentWillMount() {
+    this.sumBalance();
+
   }
 
 })
@@ -135,7 +139,7 @@ const ItemList = React.createClass({
   },
 
   render() {
-    const { items, removeItem, editState } = this.props;
+    const { items, balance, totalCredits, totalDebits, removeItem, editState } = this.props;
     // const { onChange } = this;
     // console.log('items[0]', items[0].amount.value);
     // let { amount } = this.refs;
@@ -147,7 +151,7 @@ const ItemList = React.createClass({
         return (
         <tr key={item.id}>
           <td>
-            <input ref="amount" onChange={this.onChange.bind(this, "amount", index)} type="number" min='0' step='0.01' value={item.amount}/>
+            <input ref="amount" onChange={this.onChange.bind(this, "amount", index)} type="number" min='0.01' step='0.01' value={item.amount} required/>
           </td>
           <td>
             <input ref="credit" onChange={this.onChange.bind(this, "credit", index)} type="radio" name="type" required />Credit
@@ -200,9 +204,9 @@ const ItemList = React.createClass({
       </thead>
       <tbody>
       <tr>
-      <td>00</td>
-      <td>00</td>
-      <td>00</td>
+      <td>{balance}</td>
+      <td>{totalCredits}</td>
+      <td>{totalDebits}</td>
       </tr>
       </tbody>
 
@@ -256,12 +260,15 @@ const NewItemForm = React.createClass({
       id: uuid()
     }
     // console.log('item', item);
+    //
     this.props.addNewItem(item);
 
     amount.value = "";
     description.value = "";
     credit.checked = false;
     debit.checked = false;
+
+    // this.props.sumBalance();
 
   },
 
@@ -270,7 +277,7 @@ const NewItemForm = React.createClass({
       <form onSubmit={this.submitForm}>
       <div className="form-group">
       <label htmlFor="newItem" >Amount</label>
-      <input ref="amount" type="number" className="form-control" id="amount" min='0' step='0.01' required/>
+      <input ref="amount" type="number" className="form-control" id="amount" min='0.01' step='0.01' required/>
       </div>
       <div className="form-group">
       <label htmlFor="description">Description</label>
