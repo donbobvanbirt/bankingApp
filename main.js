@@ -9,34 +9,21 @@ const App = React.createClass({
   },
 
   addNewItem(newItem) {
-    console.log('state before addNewItem:', this.state);
+    // console.log('state before addNewItem:', this.state);
     const { items } = this.state;
     items.push(newItem);
     this.setState({
       items: [...items]
     });
-
     this.sumBalance();
-
   },
 
   removeItem(id) {
     const { items } = this.state;
     let newItems = items.filter(item => item.id !== id);
-
-    // this.setState({
-    //   items: []
-    // });
-
-    // items.push(newItems);
-    console.log("delete button clicked");
-    console.log('id:', id);
-    // items.push(newItems);
     this.setState({
       items: newItems
     }, () => this.sumBalance());
-    // this.addNewItem();
-    // this.sumBalance();
   },
 
   edit(newState) {
@@ -44,8 +31,6 @@ const App = React.createClass({
       items: newState
     })
     this.sumBalance();
-
-    console.log('state after edit:', this.state.items);
   },
 
   sumBalance() {
@@ -70,10 +55,6 @@ const App = React.createClass({
       totalDebits: totalDebits,
       balance: totalBalance
     })
-
-    console.log('totalDebits', totalDebits);
-    console.log('totalCredits', totalCredits);
-    console.log('state after sumBalance:', this.state);
   },
 
   render() {
@@ -90,7 +71,6 @@ const App = React.createClass({
 
   componentWillMount() {
     this.sumBalance();
-
   }
 
 })
@@ -103,34 +83,26 @@ const ItemList = React.createClass({
     }
   },
 
-  // onChange(e) {
-  //   console.log('change!');
-  // },
-
   editItem (item) {
     this.setState({
       editing: item
     })
-    console.log('item', item);
-    // console.log('parent state', )
   },
 
   endEdit() {
     this.setState({
       editing: ""
     })
-
-
   },
 
   onChange (name, index) {
     const { amount, description, credit, debit } = this.refs;
     let newItems = this.props.items;
 
+    // if (!amount.value) {
+    //   amount.value = 0;
+    // }
 
-
-    // console.log('name, index', name, index);
-    // console.log('newItems[index][name]', newItems[index][name]);
     if (name === "amount") {
       newItems[index][name] = amount.value;
     } else if (name === "description"){
@@ -139,10 +111,10 @@ const ItemList = React.createClass({
 
     if (credit.checked) {
       newItems[index]["type"] = "credit";
-      console.log('crdit:', credit.value);
+      // console.log('crdit:', credit.value);
     } else if (debit.checked) {
       newItems[index]["type"] = "debit";
-      console.log('debit', debit.value);
+      // console.log('debit', debit.value);
     }
     this.props.edit(newItems);
 
@@ -150,9 +122,6 @@ const ItemList = React.createClass({
 
   render() {
     const { items, balance, totalCredits, totalDebits, removeItem, editState } = this.props;
-    // const { onChange } = this;
-    // console.log('items[0]', items[0].amount.value);
-    // let { amount } = this.refs;
 
     let Items = items.map((item, index) => {
 
@@ -164,8 +133,12 @@ const ItemList = React.createClass({
             <input ref="amount" onChange={this.onChange.bind(this, "amount", index)} type="number" min='0.01' step='0.01' value={item.amount} required/>
           </td>
           <td>
-            <input ref="credit" onChange={this.onChange.bind(this, "credit", index)} type="radio" name="type" required />Credit
-            <input ref="debit" onChange={this.onChange.bind(this, "debit", index)} type="radio" name="type" />Debit
+            <label className="btn btn-sm">
+              <input ref="credit" onChange={this.onChange.bind(this, "credit", index)} type="radio" name="type" required /> Credit
+            </label>
+            <label className="btn btn-sm">
+              <input ref="debit" onChange={this.onChange.bind(this, "debit", index)} type="radio" name="type" /> Debit
+            </label>
           </td>
           <td>
             <input ref="description" onChange={this.onChange.bind(this, "description", index)} type="text" value={item.description} />
@@ -183,7 +156,6 @@ const ItemList = React.createClass({
 
         // if not editing
         return (
-
           <tr key={item.id}>
           <td>{item.amount}</td>
           <td>{item.type}</td>
@@ -196,14 +168,12 @@ const ItemList = React.createClass({
           <button onClick={removeItem.bind(null, item.id)}  className="btn btn-sm btn-danger">X</button>
           </td>
           </tr>
-
         )
       }
     })
 
     return (
       <div>
-
       <table className="table">
       <thead>
       <tr>
@@ -219,7 +189,6 @@ const ItemList = React.createClass({
       <td>{totalDebits}</td>
       </tr>
       </tbody>
-
       </table>
 
       <h3>Transactions:</h3>
@@ -235,9 +204,7 @@ const ItemList = React.createClass({
       </tr>
       </thead>
       <tbody>
-
       {Items}
-
       </tbody>
       </table>
       </div>
@@ -249,8 +216,7 @@ const ItemList = React.createClass({
 const NewItemForm = React.createClass({
   submitForm(e) {
     e.preventDefault();
-
-    let { amount } = this.refs; // ????
+    let { amount } = this.refs;
 
     function creditOrDebit () {
       if (document.getElementById("credit").checked) {
@@ -263,23 +229,17 @@ const NewItemForm = React.createClass({
     let item = {
       amount: amount.value,
       description: description.value,
-      credit: document.getElementById("credit").checked,
-      debit: document.getElementById("debit").checked,
       type: creditOrDebit(),
       submitted: moment().format('MMM Do, h:mm a'),
       id: uuid()
     }
-    // console.log('item', item);
-    //
+
     this.props.addNewItem(item);
 
     amount.value = "";
     description.value = "";
     credit.checked = false;
     debit.checked = false;
-
-    // this.props.sumBalance();
-
   },
 
   render() {
@@ -294,14 +254,17 @@ const NewItemForm = React.createClass({
       <input type="text" className="form-control" id="description"/>
       </div>
       <div className="form-group">
-      <input type="radio" name="type" id="credit" value="credit" required/>Credit
-      <input type="radio" name="type" id="debit" value="debit"/>Debit
+      <label className="btn btn-sm">
+        <input type="radio" name="type" id="credit" value="credit" required/> Credit
+      </label>
+      <label className="btn btn-sn">
+        <input type="radio" name="type" id="debit" value="debit"/> Debit
+      </label>
       <button className="btn btn-default">Submit</button>
       </div>
       </form>
     )
   }
-
 })
 
 ReactDOM.render(
