@@ -9,11 +9,12 @@ const App = React.createClass({
   },
 
   addNewItem(newItem) {
+    console.log('state before addNewItem:', this.state);
     const { items } = this.state;
-
+    items.push(newItem);
     this.setState({
-      items: [...items, newItem]
-    })
+      items: [...items]
+    });
 
     this.sumBalance();
 
@@ -21,13 +22,21 @@ const App = React.createClass({
 
   removeItem(id) {
     const { items } = this.state;
+    let newItems = items.filter(item => item.id !== id);
+
+    // this.setState({
+    //   items: []
+    // });
+
+    // items.push(newItems);
     console.log("delete button clicked");
     console.log('id:', id);
-
+    // items.push(newItems);
     this.setState({
-      items: items.filter(item => item.id !== id)
-    });
-
+      items: newItems
+    }, () => this.sumBalance());
+    // this.addNewItem();
+    // this.sumBalance();
   },
 
   edit(newState) {
@@ -64,6 +73,7 @@ const App = React.createClass({
 
     console.log('totalDebits', totalDebits);
     console.log('totalCredits', totalCredits);
+    console.log('state after sumBalance:', this.state);
   },
 
   render() {
