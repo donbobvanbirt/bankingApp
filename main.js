@@ -41,6 +41,11 @@ const App = React.createClass({
     let credits = [];
     let item;
 
+    // round to two decimals
+    function round(num) {
+      return Math.round(num * 100) / 100;
+    }
+
     for (let i=0; i<items.length; i++) {
       item = items[i];
       if(item.type === "debit") {
@@ -49,7 +54,14 @@ const App = React.createClass({
         totalCredits += parseFloat(item.amount);
       }
     }
+
+    totalDebits = round(totalDebits);
+    totalCredits = round(totalCredits);
+
     let totalBalance = totalCredits - totalDebits;
+
+    totalBalance = round(totalBalance);
+
     this.setState({
       totalCredits: totalCredits,
       totalDebits: totalDebits,
