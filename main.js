@@ -80,11 +80,6 @@ const App = React.createClass({
       </div>
     )
   },
-
-  componentWillMount() {
-    this.sumBalance();
-  }
-
 })
 
 // list
@@ -105,6 +100,7 @@ const ItemList = React.createClass({
     this.setState({
       editing: ""
     })
+    //------------
   },
 
   onChange (name, index) {
@@ -129,7 +125,6 @@ const ItemList = React.createClass({
       // console.log('debit', debit.value);
     }
     this.props.edit(newItems);
-
   },
 
   render() {
@@ -157,10 +152,10 @@ const ItemList = React.createClass({
                 </td>
                 <td>{item.submitted}</td>
                 <td>
-                  <button onClick={() => {this.endEdit()}} className="btn btn-sm btn-success">X</button>
+                  <button onClick={() => {this.endEdit()}} className="btn btn-sm btn-success"><i className="fa fa-edit"></i></button>
                 </td>
                 <td>
-                  <button onClick={removeItem.bind(null, item.id)}  className="btn btn-sm btn-danger">X</button>
+                  <button onClick={removeItem.bind(null, item.id)}  className="btn btn-sm btn-danger"><i className="fa fa-trash"></i></button>
                 </td>
               </tr>
             )
@@ -174,10 +169,10 @@ const ItemList = React.createClass({
                 <td>{item.description}</td>
                 <td>{item.submitted}</td>
                 <td>
-                  <button onClick={() => {this.editItem(item.id)}} className="btn btn-sm btn-success">X</button>
+                  <button onClick={() => {this.editItem(item.id)}} className="btn btn-sm btn-success"><i className="fa fa-edit"></i></button>
                 </td>
                 <td>
-                  <button onClick={removeItem.bind(null, item.id)}  className="btn btn-sm btn-danger">X</button>
+                  <button onClick={removeItem.bind(null, item.id)}  className="btn btn-sm btn-danger"><i className="fa fa-trash"></i></button>
                 </td>
               </tr>
             )
@@ -189,9 +184,9 @@ const ItemList = React.createClass({
             <table className="table">
               <thead>
                 <tr>
-                  <th>Available Balance</th>
-                  <th>Total Credits</th>
-                  <th>Total Debits</th>
+                  <th><i className="fa fa-usd"></i> Available Balance</th>
+                  <th><i className="fa fa-plus"></i> Total Credits</th>
+                  <th><i className="fa fa-minus"></i> Total Debits</th>
                 </tr>
               </thead>
               <tbody>
@@ -207,12 +202,12 @@ const ItemList = React.createClass({
             <table className="table">
               <thead>
                 <tr>
-                  <th>Amount</th>
-                  <th>Type</th>
-                  <th>Discription</th>
-                  <th>Submitted</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
+                  <th><i className="fa fa-usd"></i> Amount</th>
+                  <th><i className="fa fa-exchange"></i> Type</th>
+                  <th><i className="fa fa-info"></i> Discription</th>
+                  <th><i className="fa fa-clock-o"></i> Submitted</th>
+                  <th><i className="fa fa-edit"></i> Edit</th>
+                  <th><i className="fa fa-trash"></i> Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -258,11 +253,11 @@ const ItemList = React.createClass({
         return (
           <form onSubmit={this.submitForm}>
             <div className="form-group">
-              <label htmlFor="newItem" >Amount</label>
+              <label htmlFor="newItem" ><i className="fa fa-usd"></i> Amount</label>
               <input ref="amount" type="number" className="form-control" id="amount" min='0.01' step='0.01' required/>
             </div>
             <div className="form-group">
-              <label htmlFor="description">Description</label>
+              <label htmlFor="description"><i className="fa fa-info"></i> Description</label>
               <input type="text" className="form-control" id="description"/>
             </div>
             <div className="form-group">
