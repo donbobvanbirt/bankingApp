@@ -152,7 +152,7 @@ const ItemList = React.createClass({
                 </td>
                 <td>{item.submitted}</td>
                 <td>
-                  <button onClick={() => {this.endEdit()}} className="btn btn-sm btn-success"><i className="fa fa-edit"></i></button>
+                  <button onClick={() => {this.endEdit()}} className="btn btn-sm btn-success">Save</button>
                 </td>
                 <td>
                   <button onClick={removeItem.bind(null, item.id)}  className="btn btn-sm btn-danger"><i className="fa fa-trash"></i></button>
